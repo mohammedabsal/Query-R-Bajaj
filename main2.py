@@ -23,7 +23,7 @@ TEAM_TOKEN = "1072521ce486eb467b9bc36a8d3141814c43b779390db369589237eb87e940f7"
 COHERE_API_KEY = "1bxiGdTKWg09SX91C9Cl62yzVOGqgyxWfZXBBayA"  # <-- Replace with your Cohere API key
 
 co = cohere.Client(COHERE_API_KEY)
-model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
 security = HTTPBearer()
 
 # 2. === FastAPI Setup ===
@@ -59,7 +59,7 @@ def extract_text_from_pdf(file_path: str) -> str:
     return preprocess_text(" ".join([page.get_text() for page in doc]))
 
 
-def chunk_text(text: str, chunk_size: int = 500) -> List[str]:
+def chunk_text(text: str, chunk_size: int = 500, overlap: int = 20) -> List[str]:
     sentences = re.split(r"(?<=[.!?])\s+", text)
     chunks = []
     current = ""
@@ -68,12 +68,11 @@ def chunk_text(text: str, chunk_size: int = 500) -> List[str]:
             current += " " + sent
         else:
             chunks.append(current.strip())
-            current = sent
+            overlap_text = " ".join(current.strip().split()[-overlap:]) if overlap > 0 else ""
+            current = overlap_text + " " + sent
     if current:
         chunks.append(current.strip())
     return chunks
-
-
 def get_embeddings(texts: List[str]):
     return model.encode(texts, show_progress_bar=False)
 
@@ -115,6 +114,14 @@ async def run(
     token = creds.credentials
     if token != TEAM_TOKEN:
         raise HTTPException(status_code=403, detail="Unauthorized")
+    MAX_CONTEXT_TOKENS = 1500  # adjust as needed
+    def trim_context(chunks, max_tokens=MAX_CONTEXT_TOKENS):
+        context = ""
+        for chunk in chunks:
+            if len(context.split()) + len(chunk.split()) > max_tokens:
+                break
+            context += "\n\n" + chunk
+        return context.strip()
 
     # Download PDF
     try:
@@ -136,11 +143,9 @@ async def run(
     for q in payload.questions:
         q_emb = get_embeddings([q])[0].reshape(1, -1)
         D, I = index.search(q_emb, k=5)
+        selected_chunks = [chunks[i] for i in I[0]]
+        context = trim_context(selected_chunks)
         context = "\n\n".join(chunks[i] for i in I[0])
         answers.append(cohere_answer(q, context))
 
     return JSONResponse(content={"answers": answers})
-
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
