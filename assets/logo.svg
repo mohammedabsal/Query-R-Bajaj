@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="120" viewBox="0 0 600 120" role="img" aria-labelledby="title">
+  <title id="title">Query-R-Bajaj Logo</title>
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#4A90E2"/>
+      <stop offset="1" stop-color="#50E3C2"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="120" rx="12" fill="url(#g)"/>
+  <g font-family="Segoe UI, Arial, sans-serif" font-weight="700">
+    <text x="30" y="72" font-size="36" fill="#ffffff">Query-R</text>
+    <text x="210" y="72" font-size="36" fill="#ffffff" opacity="0.9">-Bajaj</text>
+  </g>
+  <g transform="translate(480,18) scale(0.9)" fill="#ffffff" opacity="0.9">
+    <rect x="0" y="0" width="94" height="84" rx="6" fill="#ffffff" opacity="0.12"/>
+    <path d="M12 60 L30 36 L44 48 L64 18" stroke="#ffffff" stroke-width="6" stroke-linecap="round" fill="none" />
+  </g>
+</svg>
