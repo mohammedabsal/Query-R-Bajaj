@@ -5,7 +5,7 @@
 
 Small utility repository containing `process.py` — a script for (brief description: data processing / querying tasks). This README explains the project's purpose, setup, and basic usage so you can get started quickly.
 
-![Demo Screenshot](assets/screenshot.png)
+![Demo Screenshot](assets/Screenshot.png)
 
 
 ## Contents
