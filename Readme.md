@@ -73,7 +73,3 @@ This repository is provided without an explicit license. If you want to permit r
 
 Repository owner: mohammedabsal
 
----
-
-Notes
-- If you'd like, I can improve this README by reading `process.py` and adding concrete usage examples and the exact dependency list. Would you like me to do that next?
